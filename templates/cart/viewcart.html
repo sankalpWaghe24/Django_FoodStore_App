@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}ViewCart{% endblock title %}
+
+{% block body %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(function(){
+        $("input[name='quantity']").change(function(){
+            let id = $(this).attr("id")
+            let quantity = $(this).val()
+
+            //Ajax GET request
+            $.get("updatecart",{"id":id,"quantity":quantity},function(data,status){
+                $("#totalprice" +id).text(data.totalprice)
+
+            }) 
+        })
+    })
+</script>
+
+    <div class="container"  >
+        <div class="row">
+            <div class="col">
+                {% include 'messages.html' %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col my-3">
+                <h2 style="text-align:center;color:orange;">🛒 My Cart 🛒</h2>
+                <hr>
+            </div>
+        </div>
+        <table class="table">
+            <tr >
+                <td>Customer Name : <strong> {{cart.user.first_name}} {{cart.user.last_name}}</td></strong>
+                <td>Creation Date : <strong> {{cart.create_at}}</td> </strong>
+                
+            </tr>
+            <tr>
+                <th>Food Name</th>
+                <th>Food Price</th>
+                <th>Food Quantity</th>
+                <th>Sub Total</th>
+                <th>Date</th>
+            </tr>
+
+            {% for item in cart.itemlist.all  %}
+            <tr>
+                <th>{{item.food.foodName}}</th>
+                <th>{{item.food.foodPrice}}</th>
+                <th><input style="width:80px;" class="form-control btn btn-primary" type="number" min="1" value="{{item.quantity}}" id="{{item.pk}}" name="quantity"/></th>
+
+                <th id="totalprice{{item.pk}}" >{{item.get_total}} </th>
+
+                <th  >{{item.create_at}}</th>
+                <th><a href="">
+                </a></th>
+                <th> <a href="/cart/removeitem/{{item.pk}}" class="btn btn-outline-danger me-3">
+                    <i class="bi bi-file-x"  style="font-size: 20px" ></i>
+                  </a>
+                </th>
+                <th> <a href="/cart/checkout" class="btn btn-outline-info me-3">
+                    <i class="bi bi-cart-check-fill"  style="font-size: 20px" ></i>
+                  </a>
+                </th>
+                
+            </tr>
+               {% empty %}
+                <tr>
+                    <td colspan="4">
+                        <h6 class="text-center">Cart is Empty...</h6> 
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+        <p style="text-align:right " >Total Items : {{cart.get_cart_items}} | Total Cost : Rs.{{cart.get_cart_total}} </p>
+    </div>
+{% endblock body %}
+    
