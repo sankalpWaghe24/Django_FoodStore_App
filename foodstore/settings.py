@@ -1,3 +1,5 @@
+import django_heroku
+
 
 from pathlib import Path
 
@@ -119,3 +121,5 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "account.MyUser"
+
+django_heroku.settings(locals())
